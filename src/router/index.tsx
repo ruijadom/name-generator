@@ -1,7 +1,7 @@
 import { RouteObject } from "react-router-dom";
 
-import { HomePage } from "../pages/home.page";
-import { Layout } from "../components/layout";
+import { HomePage } from "@/pages/home.page";
+import { Layout } from "@/components/layout";
 
 const normalRoutes: RouteObject = {
   path: "*",
