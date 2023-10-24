@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 
 
 // Define a list of aliases for path mappings.
-const aliases = ["pages", "components", "utils", "router", "services", "types"];
+const aliases = ["pages", "components", "utils", "router", "api", "types"];
 
 
 // https://vitejs.dev/config/
