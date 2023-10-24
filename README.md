@@ -1,27 +1,52 @@
-# React + TypeScript + Vite
+# Name Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- [Name Generator](#name-generator)
+  - [Description](#description)
+  - [Scope of Work](#scope-of-work)
+  - [Technologies Used](#technologies-used)
+  - [How to Run Project](#how-to-run-project)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Description
 
-## Expanding the ESLint configuration
+Welcome to the Name Generator app project! The primary objective of this project is to develop a user-friendly application for generating baby names. Our focus is to strike a balance between selecting popular names without always suggesting the most common ones. To achieve this, our name generator will be guided by underlying statistical data to provide meaningful and unique name suggestions.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Scope of Work
 
-- Configure the top-level `parserOptions` property like this:
+Build a Name Generator application that serves as a practical and interactive tool for expecting parents or anyone interested in discovering unique yet popular baby names. The key features and functionalities of this application include:
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+- [ ] **User Interface**:  
+  - [ ] Create a new page or screen within the application.
+  - [ ] Add two buttons with labels "Female" and "Male" to the screen.
+- [ ] **Implement Button Click Event Handling**: 
+  - [ ] Define event handlers for the "Female" and "Male" buttons to respond to user clicks.
+- [ ] **Random Name Selection Logic**: Implement a function or algorithm to select a name from the provided dataset. This function should consider the gender selected (Female or Male) and choose a name accordingly.
+- [ ] **Display Selected Name**: 
+  - [ ] Create a card or a visually appealing container in the UI to display the selected name.
+  - [ ] Ensure that the selected name is prominently displayed in the card.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Technologies Used
+
+  React, Typescript, TailwindCSS
+
+## How to Run Project
+
+1. Clone the repository.
+   ```bash
+   git clone https://github.com/ruijadom/trip-planner.git
+   cd trip-planner
+
+2. Install dependencies.
+   ```bash
+   npm install
+   ```
+
+3. Start the development server.
+
+    This command starts the mock server and the client app concurrently.
+
+
+   ```bash
+    npm run dev
+    ```
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
