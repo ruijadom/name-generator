@@ -32,22 +32,18 @@ export const BabyCard = ({
    * Handle button click event to generate a random name based on the selected gender.
    * @param gender - The gender to filter by (e.g., 'female' or 'male').
    */
-  const handleButtonClick = (gender: BabyData["gender"]) => {
-    const genderFilter = gender.toUpperCase();
-
+  const handleButtonClick = (currentGender: BabyData["gender"]) => {
+    const genderFilter = currentGender.toUpperCase();
+    
     const filteredBabies = babies.filter((baby) => {
       return baby[1] === genderFilter;
     });
-
-    console.log(filteredBabies.length);
-
-    if (filteredBabies.length === 0) {
-      setName("No names found for this gender.");
-      return;
-    }
+    
+    if (filteredBabies.length === 0) return;
 
     /**
      * Generate a random index within the range of filteredBabies array length.
+     * Use this random index to get a baby's name and format it.
      */
     const rawName =
       filteredBabies[generateRandomIndex(filteredBabies.length)][3];
@@ -61,7 +57,7 @@ export const BabyCard = ({
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="pt-12">
         <div className="space-y-8 text-center">
           <div className="w-full flex space-x-4">
             {genders.map((gender) => {
@@ -76,13 +72,15 @@ export const BabyCard = ({
                       : "bg-blue-500 hover:bg-blue-700"
                   )}
                 >
-                  {gender}
+                  {formatName(gender)}
                 </button>
               );
             })}
           </div>
           {name ? (
+            <div>
             <p className="text-2xl font-medium">{name}</p>
+            </div>
           ) : (
             <p className="text-2xl">🧬</p>
           )}
