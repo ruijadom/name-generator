@@ -1,8 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-import { Header } from "./header";
-
-
 export const Layout = () => {
   return (
     <div className="flex min-h-screen flex-col space-y-6 bg-slate-100">
