@@ -66,7 +66,7 @@ export const BabyCard = ({
           <div className="w-full flex space-x-4">
             {genders.map((gender) => {
               return (
-                <Button
+                <button
                   key={gender}
                   onClick={() => handleButtonClick(gender)}
                   className={cn(
@@ -77,7 +77,7 @@ export const BabyCard = ({
                   )}
                 >
                   {gender}
-                </Button>
+                </button>
               );
             })}
           </div>
