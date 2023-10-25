@@ -15,15 +15,15 @@ Welcome to the Name Generator app project! The primary objective of this project
 
 Build a Name Generator application that serves as a practical and interactive tool for expecting parents or anyone interested in discovering unique yet popular baby names. The key features and functionalities of this application include:
 
-- [ ] **User Interface**:  
-  - [ ] Create a new page or screen within the application.
-  - [ ] Add two buttons with labels "Female" and "Male" to the screen.
-- [ ] **Implement Button Click Event Handling**: 
-  - [ ] Define event handlers for the "Female" and "Male" buttons to respond to user clicks.
-- [ ] **Random Name Selection Logic**: Implement a function or algorithm to select a name from the provided dataset. This function should consider the gender selected (Female or Male) and choose a name accordingly.
-- [ ] **Display Selected Name**: 
-  - [ ] Create a card or a visually appealing container in the UI to display the selected name.
-  - [ ] Ensure that the selected name is prominently displayed in the card.
+- [x] **User Interface**:  
+  - [x] Create a new page or screen within the application.
+  - [x] Add two buttons with labels "Female" and "Male" to the screen.
+- [x] **Implement Button Click Event Handling**: 
+  - [x] Define event handlers for the "Female" and "Male" buttons to respond to user clicks.
+- [x] **Random Name Selection Logic**: Implement a function or algorithm to select a name from the provided dataset. This function should consider the gender selected (Female or Male) and choose a name accordingly.
+- [x] **Display Selected Name**: 
+  - [x] Create a card or a visually appealing container in the UI to display the selected name.
+  - [x] Ensure that the selected name is prominently displayed in the card.
 
 ## Technologies Used
 
