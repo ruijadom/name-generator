@@ -1,3 +1,9 @@
+import axios from "axios";
+
+export const api = axios.create({
+  baseURL: "https://data.cityofnewyork.us/api"
+})
+
 export const babies = [
   ["2016", "FEMALE", "ASIAN AND PACIFIC ISLANDER", "Olivia", "172", "1"],
   ["2016", "FEMALE", "ASIAN AND PACIFIC ISLANDER", "Chloe", "112", "2"],

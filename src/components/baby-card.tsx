@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
   Card,
@@ -13,6 +13,9 @@ import { GenderType, ParsedBabyData } from "@/api/types";
 import { formatName, getRandomObjectFromArray } from "@/utils";
 import { cn } from "@/lib/utils";
 
+/**
+ * Props for the BabyCard component.
+ */
 export interface BabyCardProps {
   title: string;
   description: string;
@@ -20,81 +23,94 @@ export interface BabyCardProps {
   data: string[][];
 }
 
-
-export const BabyCard = ({
+/**
+ * BabyCard component that displays baby information and allows filtering.
+ */
+export const BabyCard: React.FC<BabyCardProps> = ({
   title,
   description,
   genders,
   data: babies,
 }: BabyCardProps) => {
-  const [selectedGender, setSelectedGender] = useState<
-    GenderType | undefined
-  >();
-  const [generatedName, setGeneratedName] = useState<string | undefined>("");
+  const [currentBabies, setCurrentBabies] = useState<ParsedBabyData[]>([]);
+  const [generatedBaby, setGeneratedBaby] = useState<ParsedBabyData | undefined>();
+  const [currentGender, setCurrentGender] = useState<GenderType | undefined>();
+  const [currentEthnicity, setCurrentEthnicity] = useState<string | undefined>();
 
-  /**
-   * Memoized & Parses the baby data and converts popularity to integers.
-   * @param babies - The baby data to parse.
-   * @returns An array of parsed baby data.
-   */
-  const memoizedParsedData = useMemo((): ParsedBabyData[] => {
-    // Parse the popularity to integers
+  const memoizedParsedData = useMemo(() => {
     return babies.map((baby) => ({
-      year: baby[0],
-      gender: baby[1],
-      ethnicity: baby[2],
-      name: baby[3],
-      numBabies: parseInt(baby[4], 10),
-      popularity: parseInt(baby[5], 10),
+      year: baby[8],
+      gender: baby[9],
+      ethnicity: baby[10],
+      name: baby[11],
+      numBabies: parseInt(baby[12], 10),
+      popularity: parseInt(baby[13], 10),
     }));
   }, [babies]);
 
-  /**
-   * Generates a name based on gender and baby popularity data.
-   */
-  const handleGenerateName = (gender: GenderType) => {
-    /**
-     * Calculate the maximum number of babies with popularity 1 for the given gender.
-     */
+  useEffect(() => {
     const maxNumBabies = Math.max(
       ...memoizedParsedData
-        .filter((baby) => baby.gender === gender && baby.popularity === 1)
+        .filter((baby) => baby.popularity === 1)
         .map((baby) => baby.numBabies)
     );
 
-    /**
-     * Filter baby names based on gender, popularity, and not having the maximum number of babies.
-     */
-    const filteredBabies = memoizedParsedData.filter(
-      (baby) =>
-        baby.gender === gender &&
-        baby.popularity === 1 &&
-        baby.numBabies !== maxNumBabies
+    const filteredBabies = currentBabies.filter(
+      (baby) => baby.popularity === 1 && baby.numBabies !== maxNumBabies
     );
 
     if (filteredBabies.length === 0) {
-      setGeneratedName(undefined);
+      setCurrentBabies([]);
+    } else {
+      setCurrentBabies(filteredBabies);
+    }
+
+    setCurrentBabies(memoizedParsedData);
+  }, [memoizedParsedData]);
+
+  useEffect(() => {
+    console.log(memoizedParsedData);
+  }, [memoizedParsedData]);
+
+  const memoizedEthnicity = useMemo(() => {
+    return [...new Set(babies.map((baby) => baby[10]))];
+  }, [babies]);
+
+  const handleGenderButtonClick = (gender: GenderType) => {
+    setCurrentGender(gender);
+  };
+
+  const handleEthGeneration = (eth: string) => {
+    setCurrentEthnicity(eth);
+  };
+
+  const handleNameGeneration = () => {
+    if (!currentEthnicity || !currentGender) {
+      setGeneratedBaby(undefined);
       return;
     }
 
-    /**
-     * Get a random object from the given array.
-     */
-    const selectedBaby = getRandomObjectFromArray(filteredBabies);
+    const selectedBaby = getRandomObjectFromArray(currentBabies);
 
     if (selectedBaby) {
-      setGeneratedName(formatName(selectedBaby?.name));
+      console.log(selectedBaby);
+      setGeneratedBaby(selectedBaby);
     }
   };
 
-  /**
-   * Handles the click of a gender button.
-   * @param gender - The selected gender.
-   */
-  const handleGenderButtonClick = (gender: GenderType) => {
-    setSelectedGender(gender);
-    handleGenerateName(gender);
-  };
+  useEffect(() => {
+    if (!currentGender && !currentEthnicity) {
+      setCurrentBabies(memoizedParsedData);
+      return;
+    }
+
+    const filteredBabies = memoizedParsedData.filter(
+      (baby) =>
+        baby.ethnicity === currentEthnicity && baby.gender === currentGender
+    );
+
+    setCurrentBabies(filteredBabies);
+  }, [currentEthnicity, currentGender, memoizedParsedData]);
 
   return (
     <Card className="min-h-[300px]">
@@ -105,32 +121,53 @@ export const BabyCard = ({
       <CardContent className="pt-12">
         <div className="space-y-8 text-center">
           <div className="w-full flex space-x-4">
-            {genders.map((gender) => {
-              return (
-                <button
-                  key={gender}
-                  onClick={() => handleGenderButtonClick(gender)}
-                  className={cn(
-                    " text-white font-semibold py-2 px-4 w-full rounded focus:ring",
-                    gender === "FEMALE"
-                      ? "bg-pink-500 hover-bg-pink-700 ring-pink-300"
-                      : "bg-blue-500 hover-bg-blue-700 ring-blue-300"
-                  )}
-                >
-                  {formatName(gender)}
-                </button>
-              );
-            })}
+            {genders.map((gender) => (
+              <button
+                key={gender}
+                onClick={() => handleGenderButtonClick(gender)}
+                className={cn(
+                  "text-white font-semibold py-2 px-4 w-full rounded focus:ring",
+                  gender === "FEMALE"
+                    ? "bg-pink-500 hover-bg-pink-700 ring-pink-300"
+                    : "bg-blue-500 hover-bg-blue-700 ring-blue-300"
+                )}
+              >
+                {formatName(gender)}
+              </button>
+            ))}
           </div>
-          {generatedName ? (
-            <div>
-              {selectedGender && (
-                <p className="text-2xl font-medium">
-                  {selectedGender === "FEMALE" ? "👧" : "👦"}
-                </p>
-              )}
-              <p className="text-2xl font-medium">{generatedName}</p>
-            </div>
+          <div className="inline-flex flex-nowrap space-x-2">
+            {memoizedEthnicity &&
+              memoizedEthnicity.map((eth) => (
+                <button
+                  key={eth}
+                  disabled={!memoizedEthnicity}
+                  className={cn(
+                    "text-white font-normal text-xs py-2 px-4 rounded focus:ring active:ring-4",
+                    "bg-slate-500 hover-bg-slate-700 ring-slate-300",
+                    { "bg-slate-900": currentEthnicity === eth }
+                  )}
+                  onClick={() => handleEthGeneration(eth)}
+                >
+                  {eth}
+                </button>
+              ))}
+          </div>
+          <button
+            disabled={!currentGender && !currentEthnicity}
+            className={cn(
+              "text-white font-semibold py-2 px-4 w-full rounded focus:ring",
+              "bg-purple-500 hover-bg-purple-700 ring-purple-300",
+              { "disabled:opacity-50": !currentGender && !currentEthnicity }
+            )}
+            onClick={handleNameGeneration}
+          >
+            Name Gen
+          </button>
+          {generatedBaby ? (
+            <pre className="text-2xl font-medium">
+              {JSON.stringify(generatedBaby, null, 2)}
+            </pre>
           ) : (
             <p className="text-2xl">🧬</p>
           )}
