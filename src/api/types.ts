@@ -8,3 +8,12 @@ export interface BabyData {
 }
 
 export type GenderType = "FEMALE" | "MALE";
+
+export interface ParsedBabyData {
+  year: string;
+  gender: string;
+  ethnicity: string;
+  name: string;
+  numBabies: number;
+  popularity: number;
+}

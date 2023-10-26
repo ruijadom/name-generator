@@ -8,14 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { GenderType } from "@/api/types";
+import { GenderType, ParsedBabyData } from "@/api/types";
 
-import { formatName } from "@/utils";
+import { formatName, getRandomObjectFromArray } from "@/utils";
 import { cn } from "@/lib/utils";
 
-/**
- * Props for the BabyCard component.
- */
 export interface BabyCardProps {
   title: string;
   description: string;
@@ -23,9 +20,7 @@ export interface BabyCardProps {
   data: string[][];
 }
 
-/**
- * The BabyCard component displays baby names based on the selected gender.
- */
+
 export const BabyCard = ({
   title,
   description,
@@ -42,7 +37,7 @@ export const BabyCard = ({
    * @param babies - The baby data to parse.
    * @returns An array of parsed baby data.
    */
-  const memoizedParsedData = useMemo(() => {
+  const memoizedParsedData = useMemo((): ParsedBabyData[] => {
     // Parse the popularity to integers
     return babies.map((baby) => ({
       year: baby[0],
@@ -56,8 +51,6 @@ export const BabyCard = ({
 
   /**
    * Generates a name based on gender and baby popularity data.
-   *
-   * @param {GenderType} gender - The gender for which to generate a name.
    */
   const handleGenerateName = (gender: GenderType) => {
     /**
@@ -85,29 +78,12 @@ export const BabyCard = ({
     }
 
     /**
-     * Calculate the total weight of the filtered baby names.
+     * Get a random object from the given array.
      */
-    const totalWeight = filteredBabies.reduce(
-      (total, baby) => total + baby.popularity * baby.numBabies,
-      0
-    );
+    const selectedBaby = getRandomObjectFromArray(filteredBabies);
 
-    let randomScore = Math.random() * totalWeight;
-    let selectedName = null;
-
-    /**
-     * Generates a name based on gender and baby popularity data.
-     */
-    for (const baby of filteredBabies) {
-      randomScore -= baby.popularity * baby.numBabies;
-      if (randomScore <= 0) {
-        selectedName = baby.name;
-        break;
-      }
-    }
-
-    if (selectedName) {
-      setGeneratedName(formatName(selectedName));
+    if (selectedBaby) {
+      setGeneratedName(formatName(selectedBaby?.name));
     }
   };
 
