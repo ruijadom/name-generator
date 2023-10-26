@@ -32,7 +32,9 @@ export const BabyCard = ({
   genders,
   data: babies,
 }: BabyCardProps) => {
-  const [selectedGender, setSelectedGender] = useState<GenderType | undefined>();
+  const [selectedGender, setSelectedGender] = useState<
+    GenderType | undefined
+  >();
   const [generatedName, setGeneratedName] = useState<string | undefined>("");
 
   /**
@@ -42,22 +44,39 @@ export const BabyCard = ({
    */
   const memoizedParsedData = useMemo(() => {
     // Parse the popularity to integers
-    return babies.map((baby) =>  ({
+    return babies.map((baby) => ({
       year: baby[0],
       gender: baby[1],
       ethnicity: baby[2],
       name: baby[3],
+      numBabies: parseInt(baby[4], 10),
       popularity: parseInt(baby[5], 10),
     }));
   }, [babies]);
 
   /**
-   * Generates a random baby name based on the selected gender.
-   * @param gender - The selected gender.
+   * Generates a name based on gender and baby popularity data.
+   *
+   * @param {GenderType} gender - The gender for which to generate a name.
    */
   const handleGenerateName = (gender: GenderType) => {
+    /**
+     * Calculate the maximum number of babies with popularity 1 for the given gender.
+     */
+    const maxNumBabies = Math.max(
+      ...memoizedParsedData
+        .filter((baby) => baby.gender === gender && baby.popularity === 1)
+        .map((baby) => baby.numBabies)
+    );
+
+    /**
+     * Filter baby names based on gender, popularity, and not having the maximum number of babies.
+     */
     const filteredBabies = memoizedParsedData.filter(
-      (baby) => baby.gender === gender
+      (baby) =>
+        baby.gender === gender &&
+        baby.popularity === 1 &&
+        baby.numBabies !== maxNumBabies
     );
 
     if (filteredBabies.length === 0) {
@@ -65,18 +84,23 @@ export const BabyCard = ({
       return;
     }
 
-    const totalPopularity = filteredBabies.reduce(
-      (total, baby) => total + baby.popularity,
+    /**
+     * Calculate the total weight of the filtered baby names.
+     */
+    const totalWeight = filteredBabies.reduce(
+      (total, baby) => total + baby.popularity * baby.numBabies,
       0
     );
-    const randomScore = Math.random() * totalPopularity;
 
-    let cumulativeScore = 0;
+    let randomScore = Math.random() * totalWeight;
     let selectedName = null;
 
+    /**
+     * Generates a name based on gender and baby popularity data.
+     */
     for (const baby of filteredBabies) {
-      cumulativeScore += baby.popularity;
-      if (randomScore <= cumulativeScore) {
+      randomScore -= baby.popularity * baby.numBabies;
+      if (randomScore <= 0) {
         selectedName = baby.name;
         break;
       }
