@@ -5,6 +5,7 @@
   - [Scope of Work](#scope-of-work)
   - [Technologies Used](#technologies-used)
   - [How to Run Project](#how-to-run-project)
+  - [Screenshots](#screenshots)
 
 
 ## Description
@@ -50,3 +51,8 @@ Build a Name Generator application that serves as a practical and interactive to
     npm run dev
     ```
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+## Screenshots
+
+![Image 1](./resources/name-generator.png)
