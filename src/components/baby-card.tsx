@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   Card,
@@ -8,52 +8,96 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { BabyData } from "@/api/types";
-import { formatName, generateRandomIndex } from "@/utils";
+import { GenderType } from "@/api/types";
+
+import { formatName } from "@/utils";
 import { cn } from "@/lib/utils";
 
-interface BabyCardProps {
+/**
+ * Props for the BabyCard component.
+ */
+export interface BabyCardProps {
   title: string;
   description: string;
-  genders: string[];
+  genders: GenderType[];
   data: string[][];
 }
 
+/**
+ * The BabyCard component displays baby names based on the selected gender.
+ */
 export const BabyCard = ({
   title,
   description,
   genders,
   data: babies,
 }: BabyCardProps) => {
-  const [name, setName] = useState<string>("");
-
+  const [selectedGender, setSelectedGender] = useState<GenderType | undefined>();
+  const [generatedName, setGeneratedName] = useState<string | undefined>("");
 
   /**
-   * Handle button click event to generate a random name based on the selected gender.
-   * @param gender - The gender to filter by (e.g., 'female' or 'male').
+   * Memoized & Parses the baby data and converts popularity to integers.
+   * @param babies - The baby data to parse.
+   * @returns An array of parsed baby data.
    */
-  const handleNameGeneration = (currentGender: BabyData["gender"]) => {
-    const genderFilter = currentGender.toUpperCase();
-    
-    const filteredBabies = babies.filter((baby) => {
-      return baby[1] === genderFilter;
-    });
-    
-    if (filteredBabies.length === 0) return;
+  const memoizedParsedData = useMemo(() => {
+    // Parse the popularity to integers
+    return babies.map((baby) =>  ({
+      year: baby[0],
+      gender: baby[1],
+      ethnicity: baby[2],
+      name: baby[3],
+      popularity: parseInt(baby[5], 10),
+    }));
+  }, [babies]);
 
-    /**
-     * Generate a random index within the range of filteredBabies array length.
-     * Use this random index to get a baby's name and format it.
-     */
-    const randomIndex = generateRandomIndex(filteredBabies.length);
-    const rawName = filteredBabies[randomIndex][3];
-    const formattedName = formatName(rawName);
+  /**
+   * Generates a random baby name based on the selected gender.
+   * @param gender - The selected gender.
+   */
+  const handleGenerateName = (gender: GenderType) => {
+    const filteredBabies = memoizedParsedData.filter(
+      (baby) => baby.gender === gender
+    );
 
-    setName(formattedName);
+    if (filteredBabies.length === 0) {
+      setGeneratedName(undefined);
+      return;
+    }
+
+    const totalPopularity = filteredBabies.reduce(
+      (total, baby) => total + baby.popularity,
+      0
+    );
+    const randomScore = Math.random() * totalPopularity;
+
+    let cumulativeScore = 0;
+    let selectedName = null;
+
+    for (const baby of filteredBabies) {
+      cumulativeScore += baby.popularity;
+      if (randomScore <= cumulativeScore) {
+        selectedName = baby.name;
+        break;
+      }
+    }
+
+    if (selectedName) {
+      setGeneratedName(formatName(selectedName));
+    }
+  };
+
+  /**
+   * Handles the click of a gender button.
+   * @param gender - The selected gender.
+   */
+  const handleGenderButtonClick = (gender: GenderType) => {
+    setSelectedGender(gender);
+    handleGenerateName(gender);
   };
 
   return (
-    <Card className="min-h-[260px]">
+    <Card className="min-h-[300px]">
       <CardHeader className="bg-slate-50 rounded-t-xl">
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -65,12 +109,12 @@ export const BabyCard = ({
               return (
                 <button
                   key={gender}
-                  onClick={() => handleNameGeneration(gender)}
+                  onClick={() => handleGenderButtonClick(gender)}
                   className={cn(
                     " text-white font-semibold py-2 px-4 w-full rounded focus:ring",
                     gender === "FEMALE"
-                      ? "bg-pink-500 hover:bg-pink-700 ring-pink-300"
-                      : "bg-blue-500 hover:bg-blue-700 ring-blue-300"
+                      ? "bg-pink-500 hover-bg-pink-700 ring-pink-300"
+                      : "bg-blue-500 hover-bg-blue-700 ring-blue-300"
                   )}
                 >
                   {formatName(gender)}
@@ -78,9 +122,14 @@ export const BabyCard = ({
               );
             })}
           </div>
-          {name ? (
+          {generatedName ? (
             <div>
-            <p className="text-2xl font-medium">{name}</p>
+              {selectedGender && (
+                <p className="text-2xl font-medium">
+                  {selectedGender === "FEMALE" ? "👧" : "👦"}
+                </p>
+              )}
+              <p className="text-2xl font-medium">{generatedName}</p>
             </div>
           ) : (
             <p className="text-2xl">🧬</p>

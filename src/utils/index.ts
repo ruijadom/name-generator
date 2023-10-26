@@ -1,14 +1,4 @@
 /**
- * Generates a random index within the specified range.
- *
- * @param arrayLength - The length of the array or range from which to generate the random index.
- * @returns A random integer index within the given range.
- */
-export function generateRandomIndex(arrayLength: number) {
-  return Math.floor(Math.random() * arrayLength);
-}
-
-/**
  * Formats a name by capitalizing the first letter and converting the rest to lowercase.
  *
  * @param name - The name to be formatted.

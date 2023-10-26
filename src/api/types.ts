@@ -6,3 +6,5 @@ export interface BabyData {
   count: string;
   rank: string;
 }
+
+export type GenderType = "FEMALE" | "MALE";

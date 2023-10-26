@@ -2,7 +2,9 @@ import { BabyCard } from "@/components/baby-card";
 
 import { babies } from "@/api";
 
-const allGenders = ["FEMALE", "MALE"];
+import { GenderType } from "@/api/types";
+
+const allGenders: GenderType[] = ["FEMALE", "MALE"];
 
 export const HomePage = () => {
   return (
