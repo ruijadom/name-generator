@@ -25,13 +25,14 @@ export const BabyCard = ({
   genders,
   data: babies,
 }: BabyCardProps) => {
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
+
 
   /**
    * Handle button click event to generate a random name based on the selected gender.
    * @param gender - The gender to filter by (e.g., 'female' or 'male').
    */
-  const handleButtonClick = (currentGender: BabyData["gender"]) => {
+  const handleNameGeneration = (currentGender: BabyData["gender"]) => {
     const genderFilter = currentGender.toUpperCase();
     
     const filteredBabies = babies.filter((baby) => {
@@ -44,9 +45,10 @@ export const BabyCard = ({
      * Generate a random index within the range of filteredBabies array length.
      * Use this random index to get a baby's name and format it.
      */
-    const rawName =
-      filteredBabies[generateRandomIndex(filteredBabies.length)][3];
+    const randomIndex = generateRandomIndex(filteredBabies.length);
+    const rawName = filteredBabies[randomIndex][3];
     const formattedName = formatName(rawName);
+
     setName(formattedName);
   };
 
@@ -63,12 +65,12 @@ export const BabyCard = ({
               return (
                 <button
                   key={gender}
-                  onClick={() => handleButtonClick(gender)}
+                  onClick={() => handleNameGeneration(gender)}
                   className={cn(
-                    " text-white font-semibold py-2 px-4 w-full rounded",
+                    " text-white font-semibold py-2 px-4 w-full rounded focus:ring",
                     gender === "FEMALE"
-                      ? "bg-pink-500 hover:bg-pink-700"
-                      : "bg-blue-500 hover:bg-blue-700"
+                      ? "bg-pink-500 hover:bg-pink-700 ring-pink-300"
+                      : "bg-blue-500 hover:bg-blue-700 ring-blue-300"
                   )}
                 >
                   {formatName(gender)}
